@@ -73,6 +73,31 @@ namespace UniversityRegistrar.Models.Tests
       Assert.AreEqual(false, Student.GetAll().Count == numOfStudents);
     }
 
+    [TestMethod]
+    public void Register_AddCourseToStudent_Student()
+    {
+      Course testCourse = new Course("History", "HIST101");
+      testCourse.Save();
 
+      Course testCourse2 = new Course("blah", "blah101");
+      testCourse2.Save();
+
+      Course testCourse3 = new Course("bleep", "bloop");
+      testCourse3.Save();
+
+      Student testStudent = new Student("Bob", "11/01/17");
+      testStudent.Save();
+      testStudent.Register(testCourse.Id);
+      testStudent.Register(testCourse2.Id);
+
+      Student testStudent2 = new Student("Betty", "09/29/17");
+      testStudent2.Save();
+      testStudent2.Register(testCourse.Id);
+
+      List<Course> testList = testStudent.GetSchedule();
+      List<Course> testlist2 = testStudent2.GetSchedule();
+
+      CollectionAssert.AreNotEqual(testStudent.GetSchedule(), testStudent2.GetSchedule());
+    }
   }
 }

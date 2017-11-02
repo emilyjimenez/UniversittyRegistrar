@@ -204,7 +204,7 @@ namespace UniversityRegistrar.Models
 
     public void Register(int id)
     {
-      if (id>0)
+      if (id > 0)
       {
         MySqlConnection conn = DB.Connection();
         conn.Open();
@@ -229,7 +229,7 @@ namespace UniversityRegistrar.Models
         {conn.Dispose();}
       }
     }
-    public void Register(string crn)
+    public void RegisterCourseNumber(string crn)
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
@@ -262,6 +262,35 @@ namespace UniversityRegistrar.Models
       {conn.Dispose();}
 
       return isTakingCourses;
+    }
+
+    public List<Course> GetSchedule()
+    {
+      List<Course> studentSchedule = new List<Course>();
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand();
+      cmd.CommandText = @"SELECT * FROM students_courses JOIN courses ON (students_courses.course_id) WHERE student_id = @studentId;";
+
+      MySqlParameter studentId = new MySqlParameter();
+      studentId.ParameterName = "@studentId";
+      studentId.Value = this.Id;
+      cmd.Parameters.Add(studentId);
+
+      MySqlDataReader rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        studentSchedule.Add(new Course(rdr.GetString(4), rdr.GetString(5), rdr.GetInt32(3)));
+      }
+      conn.Close();
+
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return studentSchedule;
     }
   }
 }

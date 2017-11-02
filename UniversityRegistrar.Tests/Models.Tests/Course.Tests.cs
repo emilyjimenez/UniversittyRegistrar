@@ -18,6 +18,18 @@ namespace UniversityRegistrar.Models.Tests
       Course.ClearAll();
       Student.ClearAll();
     }
+
+    [TestMethod]
+    public void Delete_DeleteCourseInDatabase_0()
+    {
+      Course testCourse = new Course("History of Snakes", "HST100");
+      testCourse.Save();
+      int newID = testCourse.Id;
+      Course.Delete(newID);
+      int allCourses = Course.GetAll().Count;
+      Assert.AreEqual(allCourses, Course.GetAll().Count);
+    }
+
     [TestMethod]
     public void ClearAll_ClearsAllCoursesFromDatabase_0()
     {
@@ -93,7 +105,7 @@ namespace UniversityRegistrar.Models.Tests
       studentC.Save();
 
       Assert.AreEqual(studentA.IsRegistered(),studentB.IsRegistered());
-      Assert.AreEqual(!studentA.IsRegistered(),studentC.IsRegistered());ß
+      Assert.AreEqual(!studentA.IsRegistered(),studentC.IsRegistered());
       Assert.AreEqual(2,courseA.GetRoster().Count);
     }
   }
